@@ -52,7 +52,7 @@ foreach (string movie in File.ReadLines("C:/temp/title.basics.tsv").Skip(1).Take
 //	Console.WriteLine(genre);
 //}
 
-PreparedInserter inserter = new PreparedInserter();
+IInserter inserter = new BulkInserter();
 SqlConnection sqlConn = new SqlConnection(Secret.connectionString);
 sqlConn.Open();
 inserter.InsertTitles(movies, sqlConn);
