@@ -7,8 +7,30 @@ using System.Threading.Tasks;
 
 namespace IMDbImportData
 {
-	public class NormalInserter
+	public class NormalInserter : IInserter
 	{
+		public void InsertGenres(List<GenreModel> genres, SqlConnection sqlConn)
+		{
+			foreach (GenreModel genre in genres)
+			{
+				string query = "INSERT INTO Genres (" +
+					"TConst, " +
+					"Genre) " +
+								"VALUES (" + genre.TConst + ", " +
+								"'" + genre.Genre + "'" + ")";
+				try
+				{
+					SqlCommand sqlComm = new SqlCommand(query, sqlConn);
+					sqlComm.ExecuteNonQuery();
+				}
+				catch (SqlException ex)
+				{
+					Console.WriteLine(query);
+					Console.WriteLine("Error: " + ex.Message);
+				}
+			}
+		}
+
 		public void InsertTitles(List<TitleModel> titles, SqlConnection sqlConn)
 		{
 			foreach (TitleModel movie in titles)
@@ -23,7 +45,7 @@ namespace IMDbImportData
 					"EndYear, " +
 					"RunTimeMinutes) " +
 								"VALUES (" +
-								"'" + movie.TConst + "', " +
+								movie.TConst + ", " +
 								"'" + movie.TitleType + "', " +
 								"'" + movie.PrimaryTitle + "', " +
 								"'" + movie.OriginalTitle + "', " +

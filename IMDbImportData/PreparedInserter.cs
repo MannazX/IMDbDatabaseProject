@@ -9,6 +9,29 @@ namespace IMDbImportData
 {
 	public class PreparedInserter : IInserter
 	{
+		public void InsertGenres(List<GenreModel> genres, SqlConnection sqlConn)
+		{
+			string query = "INSERT INTO Genres (" +
+				"TConst, " +
+				"Genre)" +
+					"VALUES (@TConst, @Genre)";
+			SqlCommand sqlComm = new SqlCommand(query, sqlConn);
+			sqlComm.Prepare();
+			foreach (GenreModel genre in genres)
+			{
+				sqlComm.Parameters.AddWithValue("@TConst", genre.TConst);
+				sqlComm.Parameters.AddWithValue("@Genre", genre.Genre);
+			}
+			try
+			{
+				sqlComm.ExecuteNonQuery();
+			}
+			catch (SqlException ex)
+			{
+				Console.WriteLine("Error inserting query:\r\n" + query);
+			}
+		}
+
 		public void InsertTitles(List<TitleModel> titles, SqlConnection sqlConn)
 		{
 			string query = "INSERT INTO Titles (" +
