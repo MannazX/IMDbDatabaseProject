@@ -29,7 +29,7 @@ foreach (string movie in File.ReadLines("C:/temp/title.basics.tsv").Skip(1).Take
 				genres.Add(new GenreModel(genreParts));
 			}
 		}
-		catch (Exception)
+		catch (Exception ex)
 		{
 			genreParts[0] = parts[0];
 			genreParts[1] = parts[8];
@@ -52,7 +52,7 @@ foreach (string movie in File.ReadLines("C:/temp/title.basics.tsv").Skip(1).Take
 //	Console.WriteLine(genre);
 //}
 
-NormalInserter inserter = new NormalInserter();
+PreparedInserter inserter = new PreparedInserter();
 SqlConnection sqlConn = new SqlConnection(Secret.connectionString);
 sqlConn.Open();
 inserter.InsertTitles(movies, sqlConn);

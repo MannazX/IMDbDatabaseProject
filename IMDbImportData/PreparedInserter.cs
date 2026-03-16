@@ -13,22 +13,23 @@ namespace IMDbImportData
 		{
 			string query = "INSERT INTO Genres (" +
 				"TConst, " +
-				"Genre)" +
+				"Genre) " +
 					"VALUES (@TConst, @Genre)";
 			SqlCommand sqlComm = new SqlCommand(query, sqlConn);
 			sqlComm.Prepare();
 			foreach (GenreModel genre in genres)
 			{
+				sqlComm.Parameters.Clear();
 				sqlComm.Parameters.AddWithValue("@TConst", genre.TConst);
 				sqlComm.Parameters.AddWithValue("@Genre", genre.Genre);
-			}
-			try
-			{
-				sqlComm.ExecuteNonQuery();
-			}
-			catch (SqlException ex)
-			{
-				Console.WriteLine("Error inserting query:\r\n" + query);
+				try
+				{
+					sqlComm.ExecuteNonQuery();
+				}
+				catch (SqlException ex)
+				{
+					Console.WriteLine("Error inserting query:\r\n" + query + " " + ex.Message);
+				}
 			}
 		}
 
@@ -56,18 +57,18 @@ namespace IMDbImportData
 				sqlComm.Parameters.AddWithValue("@PrimaryTitle", movie.PrimaryTitle);
 				sqlComm.Parameters.AddWithValue("@OriginalTitle", movie.OriginalTitle);
 				sqlComm.Parameters.AddWithValue("@IsAdult", movie.IsAdult);
-				sqlComm.Parameters.AddWithValue("StartYear", movie.StartYear);
-				sqlComm.Parameters.AddWithValue("@EndYear", movie.EndYear);
-				sqlComm.Parameters.AddWithValue("@RuntimeMinutes", movie.RunTimeMinutes);
-			}
-			try
-			{
-				sqlComm.ExecuteNonQuery();
-			}
-			catch (SqlException ex)
-			{
-				Console.WriteLine("Error inserting query:\r\n" + query);
-			}
+				sqlComm.Parameters.AddWithValue("@StartYear", (object)movie.StartYear ?? DBNull.Value);
+				sqlComm.Parameters.AddWithValue("@EndYear", (object)movie.EndYear ?? DBNull.Value);
+				sqlComm.Parameters.AddWithValue("@RuntimeMinutes", (object)movie.RunTimeMinutes ?? DBNull.Value);
+				try
+				{
+					sqlComm.ExecuteNonQuery();
+				}
+				catch (SqlException ex)
+				{
+					Console.WriteLine("Error inserting query:\r\n" + query);
+				}
+			}	
 		}
 	}
 }
