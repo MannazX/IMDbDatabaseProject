@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 
-namespace IMDbImportData
+namespace IMDbImportData.Models
 {
 	public class TitleModel
 	{

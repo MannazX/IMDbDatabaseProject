@@ -1,11 +1,12 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using IMDbImportData.Models;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMDbImportData
+namespace IMDbImportData.Inserters
 {
 	public class NormalInserter : IInserter
 	{
@@ -29,6 +30,16 @@ namespace IMDbImportData
 					Console.WriteLine("Error: " + ex.Message);
 				}
 			}
+		}
+
+		public void InsertNames(List<NameModel> titles, SqlConnection sqlConn)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void InsertProfessions(List<ProfessionModel> professions, SqlConnection sqlConn)
+		{
+			throw new NotImplementedException();
 		}
 
 		public void InsertTitles(List<TitleModel> titles, SqlConnection sqlConn)
@@ -65,6 +76,12 @@ namespace IMDbImportData
 				}
 			}
 		}
+
+		public void NameTitleProfessions(List<NameTitleModel> titleModels, SqlConnection sqlConn)
+		{
+			throw new NotImplementedException();
+		}
+
 		private string ConvertIntToString(int? value)
 		{
 			return value.HasValue ? value.Value.ToString() : "Null";

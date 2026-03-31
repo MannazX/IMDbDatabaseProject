@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMDbImportData
+namespace IMDbImportData.Models
 {
 	public class GenreModel
 	{
@@ -13,7 +13,7 @@ namespace IMDbImportData
 
 		public GenreModel(string[] genreInfo)
 		{
-			TConst = int.Parse(genreInfo[0].Substring(2));
+			TConst = Convert.ToInt32(genreInfo[0].Substring(2));
 			Genre = genreInfo[1];
 		}
 

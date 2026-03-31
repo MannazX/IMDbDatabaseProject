@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using IMDbImportData;
+using IMDbImportData.Models;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Diagnostics.Metrics;

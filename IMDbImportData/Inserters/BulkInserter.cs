@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using IMDbImportData.Models;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMDbImportData
+namespace IMDbImportData.Inserters
 {
 	public class BulkInserter : IInserter
 	{
@@ -25,6 +26,31 @@ namespace IMDbImportData
 				DestinationTableName = "Genres"
 			};
 			bulkCopy.WriteToServer(genreTable);
+		}
+
+		public void InsertNames(List<NameModel> names, SqlConnection sqlConn)
+		{
+			DataTable nameTable = new DataTable();
+			nameTable.Columns.Add("NConst", typeof(int));
+			nameTable.Columns.Add("PrimaryName", typeof(string));
+			nameTable.Columns.Add("BirthYear", typeof(int));
+			nameTable.Columns.Add("DeathYear", typeof(int));
+			foreach (NameModel name in names)
+			{
+				nameTable.Rows.Add(name.NConst,
+					name.PrimaryName,
+					name.BirthYear ?? (object)DBNull.Value,
+					name.DeathYear ?? (object)DBNull.Value);
+			}
+			SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlConn)
+			{
+				DestinationTableName = "Names"
+			};
+		}
+
+		public void InsertProfessions(List<ProfessionModel> professions, SqlConnection sqlConn)
+		{
+			throw new NotImplementedException();
 		}
 
 		public void InsertTitles(List<TitleModel> titles, SqlConnection sqlConn)
@@ -55,6 +81,11 @@ namespace IMDbImportData
 				DestinationTableName = "Titles"
 			};
 			bulkCopy.WriteToServer(titleTable);
+		}
+
+		public void NameTitleProfessions(List<NameTitleModel> titleModels, SqlConnection sqlConn)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
