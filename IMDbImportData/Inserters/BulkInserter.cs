@@ -96,9 +96,20 @@ namespace IMDbImportData.Inserters
 			bulkCopy.WriteToServer(titleTable);
 		}
 
-		public void NameTitleProfessions(List<NameTitleModel> titleModels, SqlConnection sqlConn)
+		public void NameTitleProfessions(List<NameTitleModel> nameTitles, SqlConnection sqlConn)
 		{
-			throw new NotImplementedException();
+			DataTable nameTitleTable = new DataTable();
+			nameTitleTable.Columns.Add("NConst", typeof(int));
+			nameTitleTable.Columns.Add("TConst", typeof(int));
+
+			foreach (NameTitleModel nameTitle in nameTitles)
+			{
+				nameTitleTable.Rows.Add(nameTitle.NConst, nameTitle.TConst);
+			}
+			SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlConn)
+			{
+				DestinationTableName = "NameTitles"
+			};
 		}
 	}
 }
