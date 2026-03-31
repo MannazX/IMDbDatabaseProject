@@ -46,11 +46,24 @@ namespace IMDbImportData.Inserters
 			{
 				DestinationTableName = "Names"
 			};
+			bulkCopy.WriteToServer(nameTable);
 		}
 
 		public void InsertProfessions(List<ProfessionModel> professions, SqlConnection sqlConn)
 		{
-			throw new NotImplementedException();
+			DataTable professionTable = new DataTable();
+			professionTable.Columns.Add("NConst", typeof(int));
+			professionTable.Columns.Add("PrimaryProfession", typeof(string));
+
+			foreach (ProfessionModel profession in professions)
+			{
+				professionTable.Rows.Add(profession.NConst, profession.PrimaryProfession);
+			}
+			SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlConn)
+			{
+				DestinationTableName = "Professions"
+			};
+			bulkCopy.WriteToServer(professionTable);
 		}
 
 		public void InsertTitles(List<TitleModel> titles, SqlConnection sqlConn)
