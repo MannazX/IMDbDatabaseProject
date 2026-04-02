@@ -77,7 +77,7 @@ namespace IMDbImportData.Inserters
 			}
 		}
 
-		public void NameTitleProfessions(List<NameTitleModel> titleModels, SqlConnection sqlConn)
+		public void InsertNameTitles(List<NameTitleModel> titleModels, SqlConnection sqlConn)
 		{
 			throw new NotImplementedException();
 		}
@@ -85,6 +85,16 @@ namespace IMDbImportData.Inserters
 		private string ConvertIntToString(int? value)
 		{
 			return value.HasValue ? value.Value.ToString() : "Null";
+		}
+
+		public void InsertCrewDirectors(List<CrewDirectorModel> directors, SqlConnection sqlConn)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void InsertCrewWriters(List<CrewWriterModel> writers, SqlConnection sqlConn)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

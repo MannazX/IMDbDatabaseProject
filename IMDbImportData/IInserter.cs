@@ -9,6 +9,8 @@ namespace IMDbImportData
 		void InsertGenres(List<GenreModel> genres, SqlConnection sqlConn);
 		void InsertNames(List<NameModel> titles, SqlConnection sqlConn);
 		void InsertProfessions(List<ProfessionModel> professions, SqlConnection sqlConn);
-		void NameTitleProfessions(List<NameTitleModel> titleModels, SqlConnection sqlConn);
+		void InsertNameTitles(List<NameTitleModel> titleModels, SqlConnection sqlConn);
+		void InsertCrewDirectors(List<CrewDirectorModel> directors, SqlConnection sqlConn);
+		void InsertCrewWriters(List<CrewWriterModel> writers, SqlConnection sqlConn);
 	}
 }

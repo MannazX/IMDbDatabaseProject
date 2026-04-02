@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -96,7 +97,7 @@ namespace IMDbImportData.Inserters
 			bulkCopy.WriteToServer(titleTable);
 		}
 
-		public void NameTitleProfessions(List<NameTitleModel> nameTitles, SqlConnection sqlConn)
+		public void InsertNameTitles(List<NameTitleModel> nameTitles, SqlConnection sqlConn)
 		{
 			DataTable nameTitleTable = new DataTable();
 			nameTitleTable.Columns.Add("NConst", typeof(int));
@@ -110,6 +111,40 @@ namespace IMDbImportData.Inserters
 			{
 				DestinationTableName = "NameTitles"
 			};
+		}
+
+		public void InsertCrewDirectors(List<CrewDirectorModel> directors, SqlConnection sqlConn)
+		{
+			DataTable directorTable = new DataTable();
+			directorTable.Columns.Add("TConst", typeof(int));
+			directorTable.Columns.Add("Genre", typeof(string));
+
+			foreach (CrewDirectorModel director in directors)
+			{
+				directorTable.Rows.Add(director.TConst, director.NConst);
+			}
+			SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlConn)
+			{
+				DestinationTableName = "CrewDirectors"
+			};
+			bulkCopy.WriteToServer(directorTable);
+		}
+
+		public void InsertCrewWriters(List<CrewWriterModel> writers, SqlConnection sqlConn)
+		{
+			DataTable writersTable = new DataTable();
+			writersTable.Columns.Add("TConst", typeof(int));
+			writersTable.Columns.Add("Genre", typeof(string));
+
+			foreach (CrewWriterModel writer in writers)
+			{
+				writersTable.Rows.Add(writer.TConst, writer.NConst);
+			}
+			SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlConn)
+			{
+				DestinationTableName = "CrewWriters"
+			};
+			bulkCopy.WriteToServer(writersTable);
 		}
 	}
 }

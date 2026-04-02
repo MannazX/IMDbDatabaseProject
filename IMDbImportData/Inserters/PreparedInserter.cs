@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -124,7 +125,7 @@ namespace IMDbImportData.Inserters
 			}	
 		}
 
-		public void NameTitleProfessions(List<NameTitleModel> nameTitleModels, SqlConnection sqlConn)
+		public void InsertNameTitles(List<NameTitleModel> nameTitleModels, SqlConnection sqlConn)
 		{
 			string query = "INSERT INTO NameTitles (" +
 							"NConst, " +
@@ -144,6 +145,54 @@ namespace IMDbImportData.Inserters
 				catch (SqlException ex)
 				{
 					Console.WriteLine("Error inserting query:\r\n" + query);
+				}
+			}
+		}
+
+		public void InsertCrewDirectors(List<CrewDirectorModel> directors, SqlConnection sqlConn)
+		{
+			string query = "INSERT INTO CrewDirectors (" +
+				"TConst, " +
+				"NConst) " +
+					"VALUES (@TConst, @NConst)";
+			SqlCommand sqlComm = new SqlCommand(query, sqlConn);
+			sqlComm.Prepare();
+			foreach (CrewDirectorModel director in directors)
+			{
+				sqlComm.Parameters.Clear();
+				sqlComm.Parameters.AddWithValue("@TConst", director.TConst);
+				sqlComm.Parameters.AddWithValue("@NConst", director.NConst);
+				try
+				{
+					sqlComm.ExecuteNonQuery();
+				}
+				catch (SqlException ex)
+				{
+					Console.WriteLine("Error inserting query:\r\n" + query + " " + ex.Message);
+				}
+			}
+		}
+
+		public void InsertCrewWriters(List<CrewWriterModel> writers, SqlConnection sqlConn)
+		{
+			string query = "INSERT INTO CrewWriters (" +
+				"TConst, " +
+				"NConst) " +
+					"VALUES (@TConst, @NConst)";
+			SqlCommand sqlComm = new SqlCommand(query, sqlConn);
+			sqlComm.Prepare();
+			foreach (CrewWriterModel writer in writers)
+			{
+				sqlComm.Parameters.Clear();
+				sqlComm.Parameters.AddWithValue("@TConst", writer.TConst);
+				sqlComm.Parameters.AddWithValue("@NConst", writer.NConst);
+				try
+				{
+					sqlComm.ExecuteNonQuery();
+				}
+				catch (SqlException ex)
+				{
+					Console.WriteLine("Error inserting query:\r\n" + query + " " + ex.Message);
 				}
 			}
 		}
