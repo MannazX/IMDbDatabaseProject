@@ -47,7 +47,7 @@ namespace IMDbImportData.Inserters
 			sqlComm.Prepare();
 			foreach (NameModel name in names)
 			{
-				sqlComm.Prepare();
+				sqlComm.Parameters.Clear();
 				sqlComm.Parameters.AddWithValue("@NConst", name.NConst);
 				sqlComm.Parameters.AddWithValue("@PrimaryName", name.PrimaryName);
 				sqlComm.Parameters.AddWithValue("@BirthYear", (object)name.BirthYear ?? DBNull.Value);
@@ -73,7 +73,7 @@ namespace IMDbImportData.Inserters
 			sqlComm.Prepare();
 			foreach (ProfessionModel profession in professions)
 			{
-				sqlComm.Prepare();
+				sqlComm.Parameters.Clear();
 				sqlComm.Parameters.AddWithValue("@NConst", profession.NConst);
 				sqlComm.Parameters.AddWithValue("@PrimaryProfession", profession.PrimaryProfession);
 				try
@@ -135,7 +135,7 @@ namespace IMDbImportData.Inserters
 			sqlComm.Prepare();
 			foreach (NameTitleModel nameTitle in nameTitleModels)
 			{
-				sqlComm.Prepare();
+				sqlComm.Parameters.Clear();
 				sqlComm.Parameters.AddWithValue("@NConst", nameTitle.NConst);
 				sqlComm.Parameters.AddWithValue("@TConst", nameTitle.TConst);
 				try

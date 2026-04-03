@@ -17,125 +17,151 @@ List<NameTitleModel> nameTitles = new List<NameTitleModel>();
 List<CrewDirectorModel> directors = new List<CrewDirectorModel>();
 List<CrewWriterModel> writers = new List<CrewWriterModel>();
 
-foreach (string movie in File.ReadLines("C:/temp/title.basics.tsv").Skip(1).Take(10))
+void ReadInTitleBasics()
 {
-	string[] parts = movie.Split('\t');
-	string[] genreParts = new string[2];
-	if (parts.Length == 9)
+	foreach (string movie in File.ReadLines("C:/temp/title.basics.tsv").Skip(1).Take(10))
 	{
-		Console.WriteLine(movie);
-		movies.Add(new TitleModel(parts));
-		string genreString = parts[8];
-		try
+		string[] parts = movie.Split('\t');
+		string[] genreParts = new string[2];
+		if (parts.Length == 9)
 		{
-			string[] genreArr = genreString.Split(",");
-			foreach (string genre in genreArr)
+			Console.WriteLine(movie);
+			movies.Add(new TitleModel(parts));
+			string genreString = parts[8];
+			try
+			{
+				string[] genreArr = genreString.Split(",");
+				foreach (string genre in genreArr)
+				{
+					genreParts[0] = parts[0];
+					genreParts[1] = genre;
+					genres.Add(new GenreModel(genreParts));
+				}
+			}
+			catch (Exception ex)
 			{
 				genreParts[0] = parts[0];
-				genreParts[1] = genre;
+				genreParts[1] = parts[8];
 				genres.Add(new GenreModel(genreParts));
 			}
 		}
-		catch (Exception ex)
+		else
 		{
-			genreParts[0] = parts[0];
-			genreParts[1] = parts[8];
-			genres.Add(new GenreModel(genreParts));
+			Console.WriteLine("Invalid line: " + movie);
 		}
-	}
-	else
-	{
-		Console.WriteLine("Invalid line: " + movie);
 	}
 }
 
-foreach (string crew in File.ReadLines("C:/temp/title.crew.tsv").Skip(1).Take(10))
+void ReadInTitleCrews()
 {
-	string[] parts = crew.Split("\t");
-	string[] directorParts = new string[2];
-	string[] writerParts = new string[2];
-	if (parts.Length == 3)
+	foreach (string crew in File.ReadLines("C:/temp/title.crew.tsv").Skip(1).Take(10))
 	{
-		Console.WriteLine(crew);
-		string directorString = parts[1];
-		string writerString = parts[2];
-		try
+		string[] parts = crew.Split("\t");
+		string[] directorParts = new string[2];
+		string[] writerParts = new string[2];
+		if (parts.Length == 3)
 		{
-			string[] directorArr = directorString.Split(",");
-			string[] writerArr = writerString.Split(",");
-			foreach (string director in directorArr)
+			Console.WriteLine(crew);
+			string directorString = parts[1];
+			string writerString = parts[2];
+			try
 			{
-				directorParts[0] = parts[0];
-				directorParts[1] = director;
-				directors.Add(new CrewDirectorModel(directorParts));
+				string[] directorArr = directorString.Split(",");
+				string[] writerArr = writerString.Split(",");
+				foreach (string director in directorArr)
+				{
+					directorParts[0] = parts[0];
+					directorParts[1] = director;
+					directors.Add(new CrewDirectorModel(directorParts));
+				}
+				foreach (string writer in writerArr)
+				{
+					writerParts[0] = parts[0];
+					writerParts[1] = writer;
+					writers.Add(new CrewWriterModel(writerParts));
+				}
 			}
-			foreach (string writer in writerArr)
+			catch (Exception ex)
 			{
-				writerParts[0] = parts[0];
-				writerParts[1] = writer;
-				writers.Add(new CrewWriterModel(writerParts));
+				if (parts[1].Equals("\"N"))
+				{
+					directorParts[0] = parts[0];
+					directorParts[1] = parts[1];
+					directors.Add(new CrewDirectorModel(directorParts));
+				}
+				if (parts[2].Equals("\"N"))
+				{
+					writerParts[0] = parts[0];
+					writerParts[1] = parts[2];
+					writers.Add(new CrewWriterModel(writerParts));
+				}
+				continue;
 			}
 		}
-		catch (Exception ex)
+		else
 		{
-			directorParts[0] = parts[0];
-			directorParts[1] = parts[1];
-			writerParts[0] = parts[0];
-			writerParts[1] = parts[2]; 
-			directors.Add(new CrewDirectorModel(directorParts));
-			writers.Add(new CrewWriterModel(writerParts));
+			Console.WriteLine("Invalid line: " + crew);
 		}
-	}
-	else
-	{
-		Console.WriteLine("Invalid line: " + crew);
 	}
 }
 
-foreach (string name in File.ReadLines("C:/temp/name.basics.tsv").Skip(1).Take(10))
+void ReadInNameBasics()
 {
-	string[] parts = name.Split("\t");
-	string[] professionParts = new string[2];
-	string[] nameTitleParts = new string[2];
-	if (parts.Length == 6)
+	foreach (string name in File.ReadLines("C:/temp/name.basics.tsv").Skip(1).Take(10))
 	{
-		Console.WriteLine(name);
-		string professionString = parts[4];
-		string titlesString = parts[5];
-		try
+		string[] parts = name.Split("\t");
+		string[] professionParts = new string[2];
+		string[] nameTitleParts = new string[2];
+		if (parts.Length == 6)
 		{
-			string[] professionArr = professionString.Split(",");
-			string[] titlesArr = titlesString.Split(",");
-			foreach (string profession in professionArr)
+			Console.WriteLine(name);
+			names.Add(new NameModel(parts));
+			string professionString = parts[4];
+			string titlesString = parts[5];
+			try
 			{
-				professionParts[0] = parts[0];
-				professionParts[1] = profession;
-				professions.Add(new ProfessionModel(professionParts));
+				string[] professionArr = professionString.Split(",");
+				string[] titlesArr = titlesString.Split(",");
+				foreach (string profession in professionArr)
+				{
+					professionParts[0] = parts[0];
+					professionParts[1] = profession;
+					professions.Add(new ProfessionModel(professionParts));
+				}
+				foreach (string title in titlesArr)
+				{
+					nameTitleParts[0] = parts[0];
+					nameTitleParts[1] = title;
+					nameTitles.Add(new NameTitleModel(nameTitleParts));
+				}
 			}
-			foreach (string title in titlesArr)
+			catch (Exception ex)
 			{
-				nameTitleParts[0] = parts[0];
-				nameTitleParts[1] = title;
-				nameTitles.Add(new NameTitleModel(nameTitleParts));
+				if (!parts[4].Equals("\"N"))
+				{
+					professionParts[0] = parts[0];
+					professionParts[1] = parts[4];
+					professions.Add(new ProfessionModel(professionParts));
+				}
+				if (!parts[5].Equals("\"N"))
+				{
+					nameTitleParts[0] = parts[0];
+					nameTitleParts[1] = parts[5];
+					nameTitles.Add(new NameTitleModel(nameTitleParts));
+				}
+				continue;
 			}
 		}
-		catch (Exception ex)
+		else
 		{
-			professionParts[0] = parts[0];
-			professionParts[1] = parts[4];
-			nameTitleParts[0] = parts[0];
-			nameTitleParts[1] = parts[5];
-			professions.Add(new ProfessionModel(professionParts));
-			nameTitles.Add(new NameTitleModel(nameTitleParts));
+			Console.WriteLine("Invalid line: " + name);
 		}
-	}
-	else
-	{
-		Console.WriteLine("Invalid line: " + name);
 	}
 }
 
-
+ReadInTitleBasics();
+ReadInNameBasics();
+ReadInTitleCrews();
 
 //foreach (TitleModel movie in movies)
 //{
@@ -172,9 +198,14 @@ foreach (string name in File.ReadLines("C:/temp/name.basics.tsv").Skip(1).Take(1
 //	Console.WriteLine(writer);
 //}
 
-IInserter inserter = new BulkInserter();
+IInserter inserter = new PreparedInserter();
 SqlConnection sqlConn = new SqlConnection(Secret.connectionString);
 sqlConn.Open();
-inserter.InsertTitles(movies, sqlConn);
-inserter.InsertGenres(genres, sqlConn);
+//inserter.InsertTitles(movies, sqlConn);
+//inserter.InsertGenres(genres, sqlConn);
+//inserter.InsertNames(names, sqlConn);
+//inserter.InsertProfessions(professions, sqlConn);
+//inserter.InsertNameTitles(nameTitles, sqlConn);
+//inserter.InsertCrewDirectors(directors, sqlConn);
+//inserter.InsertCrewWriters(writers, sqlConn);
 sqlConn.Close();

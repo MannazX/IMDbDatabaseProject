@@ -13,8 +13,8 @@ namespace IMDbImportData.Models
 
 		public CrewWriterModel(string[] writers)
 		{
-			TConst = Convert.ToInt32(writers[0]);
-			NConst = Convert.ToInt32(writers[1]);
+			TConst = Convert.ToInt32(writers[0].Substring(2));
+			NConst = Convert.ToInt32(writers[1].Substring(2));
 		}
 
 		public override string ToString()

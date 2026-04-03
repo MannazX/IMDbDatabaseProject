@@ -13,8 +13,8 @@ namespace IMDbImportData.Models
 
 		public NameTitleModel(string[] nameTitleInfo)
 		{
-			NConst = Convert.ToInt32(nameTitleInfo[0]);
-			TConst = Convert.ToInt32(nameTitleInfo[1]);
+			NConst = Convert.ToInt32(nameTitleInfo[0].Substring(2));
+			TConst = Convert.ToInt32(nameTitleInfo[1].Substring(2));
 		}
 
 		public override string ToString()
