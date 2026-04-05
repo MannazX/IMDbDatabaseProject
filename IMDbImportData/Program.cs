@@ -53,6 +53,66 @@ void ReadInTitleBasics()
 	}
 }
 
+void ReadInNameBasics()
+{
+	foreach (string name in File.ReadLines("C:/temp/name.basics.tsv").Skip(1).Take(numberOfRows))
+	{
+		string[] parts = name.Split("\t");
+		string[] professionParts = new string[2];
+		string[] nameTitleParts = new string[2];
+		if (parts.Length == 6)
+		{
+			//Console.WriteLine(name);
+			names.Add(new NameModel(parts));
+			string professionString = parts[4];
+			string titlesString = parts[5];
+			try
+			{
+				string[] professionArr = professionString.Split(",");
+				string[] titlesArr = titlesString.Split(",");
+				if ((professionArr.Length > 1 || titlesArr.Length > 1) && (!professionString.Equals("\\N") || !titlesArr.Equals("\\N")))
+				{
+					foreach (string profession in professionArr)
+					{
+						professionParts[0] = parts[0];
+						professionParts[1] = profession;
+						professions.Add(new ProfessionModel(professionParts));
+					}
+					foreach (string title in titlesArr)
+					{
+						nameTitleParts[0] = parts[0];
+						nameTitleParts[1] = title;
+						nameTitles.Add(new NameTitleModel(nameTitleParts));
+					}
+				}
+				else
+				{
+					throw new Exception("Split Prefix Missing");
+				}
+			}
+			catch (Exception ex)
+			{
+				if (parts[4].Equals("\\N") || parts[5].Equals("\\N"))
+				{
+					continue;
+				}
+				else
+				{
+					professionParts[0] = parts[0];
+					professionParts[1] = parts[4];
+					nameTitleParts[0] = parts[0];
+					nameTitleParts[1] = parts[5];
+					professions.Add(new ProfessionModel(professionParts));
+					nameTitles.Add(new NameTitleModel(nameTitleParts));
+				}
+			}
+		}
+		else
+		{
+			Console.WriteLine("Invalid line: " + name);
+		}
+	}
+}
 void ReadInTitleCrews()
 {
 	foreach (string crew in File.ReadLines("C:/temp/title.crew.tsv").Skip(1).Take(numberOfRows))
@@ -69,17 +129,45 @@ void ReadInTitleCrews()
 			{
 				string[] directorArr = directorString.Split(",");
 				string[] writerArr = writerString.Split(",");
-				foreach (string director in directorArr)
+				if ((directorArr.Length > 1) || (writerArr.Length > 1))
 				{
-					directorParts[0] = parts[0];
-					directorParts[1] = director;
-					directors.Add(new CrewDirectorModel(directorParts));
+					if (writerString.Equals("\\N")) 
+					{
+						foreach (string director in directorArr)
+						{
+							directorParts[0] = parts[0];
+							directorParts[1] = director;
+							directors.Add(new CrewDirectorModel(directorParts));
+						}
+					}
+					else if (directorString.Equals("\\N"))
+					{
+						foreach (string writer in writerArr)
+						{
+							writerParts[0] = parts[0];
+							writerParts[1] = writer;
+							writers.Add(new CrewWriterModel(writerParts));
+						}
+					}
+					else
+					{
+						foreach (string director in directorArr)
+						{
+							directorParts[0] = parts[0];
+							directorParts[1] = director;
+							directors.Add(new CrewDirectorModel(directorParts));
+						}
+						foreach (string writer in writerArr)
+						{
+							writerParts[0] = parts[0];
+							writerParts[1] = writer;
+							writers.Add(new CrewWriterModel(writerParts));
+						}
+					}
 				}
-				foreach (string writer in writerArr)
+				else
 				{
-					writerParts[0] = parts[0];
-					writerParts[1] = writer;
-					writers.Add(new CrewWriterModel(writerParts));
+					throw new Exception("Exception caught, jump to catch");
 				}
 			}
 			catch (Exception ex)
@@ -106,66 +194,12 @@ void ReadInTitleCrews()
 	}
 }
 
-void ReadInNameBasics()
-{
-	foreach (string name in File.ReadLines("C:/temp/name.basics.tsv").Skip(1).Take(numberOfRows))
-	{
-		string[] parts = name.Split("\t");
-		string[] professionParts = new string[2];
-		string[] nameTitleParts = new string[2];
-		if (parts.Length == 6)
-		{
-			//Console.WriteLine(name);
-			names.Add(new NameModel(parts));
-			string professionString = parts[4];
-			string titlesString = parts[5];
-			try
-			{
-				string[] professionArr = professionString.Split(",");
-				string[] titlesArr = titlesString.Split(",");
-				foreach (string profession in professionArr)
-				{
-					professionParts[0] = parts[0];
-					professionParts[1] = profession;
-					professions.Add(new ProfessionModel(professionParts));
-				}
-				foreach (string title in titlesArr)
-				{
-					nameTitleParts[0] = parts[0];
-					nameTitleParts[1] = title;
-					nameTitles.Add(new NameTitleModel(nameTitleParts));
-				}
-			}
-			catch (Exception ex)
-			{
-				if (parts[4].Equals("\\N") || parts[5].Equals("\\N"))
-				{
-					continue;
-				}
-				else
-				{
-					professionParts[0] = parts[0];
-					professionParts[1] = parts[4];
-					nameTitleParts[0] = parts[0];
-					nameTitleParts[1] = parts[5];
-					professions.Add(new ProfessionModel(professionParts));
-					nameTitles.Add(new NameTitleModel(nameTitleParts));
-				}
-			}
-		}
-		else
-		{
-			Console.WriteLine("Invalid line: " + name);
-		}
-	}
-}
-
 Stopwatch sw = new Stopwatch();
 
 sw.Start();
-ReadInTitleBasics();
+//ReadInTitleBasics();
 //ReadInNameBasics();
-//ReadInTitleCrews();
+ReadInTitleCrews();
 sw.Start();
 Console.WriteLine("Time Elapsed to Read in Data: " + sw.ElapsedMilliseconds + " ms");
 
@@ -214,7 +248,7 @@ sqlConn.Open();
 //inserter.InsertNames(names, sqlConn);
 //inserter.InsertProfessions(professions, sqlConn);
 //inserter.InsertNameTitles(nameTitles, sqlConn);
-//inserter.InsertCrewDirectors(directors, sqlConn);
+inserter.InsertCrewDirectors(directors, sqlConn);
 //inserter.InsertCrewWriters(writers, sqlConn);
 sqlConn.Close();
 sw.Stop();
