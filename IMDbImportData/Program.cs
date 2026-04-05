@@ -84,19 +84,19 @@ void ReadInTitleCrews()
 			}
 			catch (Exception ex)
 			{
-				if (parts[1].Equals("\\N") || parts[2].Equals("\\N"))
-				{
-					continue;
-				}
-				else
+				if (!parts[1].Equals("\\N"))
 				{
 					directorParts[0] = parts[0];
 					directorParts[1] = parts[1];
+					directors.Add(new CrewDirectorModel(directorParts));
+				}
+				if (!parts[2].Equals("\\N"))
+				{
 					writerParts[0] = parts[0];
 					writerParts[1] = parts[2];
-					directors.Add(new CrewDirectorModel(directorParts));
 					writers.Add(new CrewWriterModel(writerParts));
 				}
+				continue;
 			}
 		}
 		else
