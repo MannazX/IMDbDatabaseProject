@@ -17,7 +17,7 @@ List<ProfessionModel> professions = new List<ProfessionModel>();
 List<NameTitleModel> nameTitles = new List<NameTitleModel>();
 List<CrewDirectorModel> directors = new List<CrewDirectorModel>();
 List<CrewWriterModel> writers = new List<CrewWriterModel>();
-int numberOfRows = 10000;
+int numberOfRows = 100000;
 void ReadInTitleBasics()
 {
 	foreach (string movie in File.ReadLines("C:/temp/title.basics.tsv").Skip(1).Take(numberOfRows))
@@ -84,19 +84,19 @@ void ReadInTitleCrews()
 			}
 			catch (Exception ex)
 			{
-				if (parts[1].Equals("\\N"))
+				if (parts[1].Equals("\\N") || parts[2].Equals("\\N"))
+				{
+					continue;
+				}
+				else
 				{
 					directorParts[0] = parts[0];
 					directorParts[1] = parts[1];
-					directors.Add(new CrewDirectorModel(directorParts));
-				}
-				if (parts[2].Equals("\\N"))
-				{
 					writerParts[0] = parts[0];
 					writerParts[1] = parts[2];
+					directors.Add(new CrewDirectorModel(directorParts));
 					writers.Add(new CrewWriterModel(writerParts));
 				}
-				continue;
 			}
 		}
 		else
@@ -138,19 +138,19 @@ void ReadInNameBasics()
 			}
 			catch (Exception ex)
 			{
-				if (!parts[4].Equals("\\N"))
+				if (parts[4].Equals("\\N") || parts[5].Equals("\\N"))
+				{
+					continue;
+				}
+				else
 				{
 					professionParts[0] = parts[0];
 					professionParts[1] = parts[4];
-					professions.Add(new ProfessionModel(professionParts));
-				}
-				if (!parts[5].Equals("\\N"))
-				{
 					nameTitleParts[0] = parts[0];
 					nameTitleParts[1] = parts[5];
+					professions.Add(new ProfessionModel(professionParts));
 					nameTitles.Add(new NameTitleModel(nameTitleParts));
 				}
-				continue;
 			}
 		}
 		else
@@ -209,7 +209,7 @@ IInserter inserter = new PreparedInserter();
 SqlConnection sqlConn = new SqlConnection(Secret.connectionString);
 sw.Start();
 sqlConn.Open();
-inserter.InsertTitles(movies, sqlConn);
+//inserter.InsertTitles(movies, sqlConn);
 //inserter.InsertGenres(genres, sqlConn);
 //inserter.InsertNames(names, sqlConn);
 //inserter.InsertProfessions(professions, sqlConn);
