@@ -7,6 +7,7 @@ using System;
 using System.Diagnostics.Metrics;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Diagnostics;
 
 Console.WriteLine("IMDb Import");
 List<TitleModel> movies = new List<TitleModel>();
@@ -16,16 +17,16 @@ List<ProfessionModel> professions = new List<ProfessionModel>();
 List<NameTitleModel> nameTitles = new List<NameTitleModel>();
 List<CrewDirectorModel> directors = new List<CrewDirectorModel>();
 List<CrewWriterModel> writers = new List<CrewWriterModel>();
-
+int numberOfRows = 10000;
 void ReadInTitleBasics()
 {
-	foreach (string movie in File.ReadLines("C:/temp/title.basics.tsv").Skip(1).Take(10))
+	foreach (string movie in File.ReadLines("C:/temp/title.basics.tsv").Skip(1).Take(numberOfRows))
 	{
 		string[] parts = movie.Split('\t');
 		string[] genreParts = new string[2];
 		if (parts.Length == 9)
 		{
-			Console.WriteLine(movie);
+			//Console.WriteLine(movie);
 			movies.Add(new TitleModel(parts));
 			string genreString = parts[8];
 			try
@@ -54,14 +55,14 @@ void ReadInTitleBasics()
 
 void ReadInTitleCrews()
 {
-	foreach (string crew in File.ReadLines("C:/temp/title.crew.tsv").Skip(1).Take(10))
+	foreach (string crew in File.ReadLines("C:/temp/title.crew.tsv").Skip(1).Take(numberOfRows))
 	{
 		string[] parts = crew.Split("\t");
 		string[] directorParts = new string[2];
 		string[] writerParts = new string[2];
 		if (parts.Length == 3)
 		{
-			Console.WriteLine(crew);
+			//Console.WriteLine(crew);
 			string directorString = parts[1];
 			string writerString = parts[2];
 			try
@@ -83,13 +84,13 @@ void ReadInTitleCrews()
 			}
 			catch (Exception ex)
 			{
-				if (parts[1].Equals("\"N"))
+				if (parts[1].Equals("\\N"))
 				{
 					directorParts[0] = parts[0];
 					directorParts[1] = parts[1];
 					directors.Add(new CrewDirectorModel(directorParts));
 				}
-				if (parts[2].Equals("\"N"))
+				if (parts[2].Equals("\\N"))
 				{
 					writerParts[0] = parts[0];
 					writerParts[1] = parts[2];
@@ -107,14 +108,14 @@ void ReadInTitleCrews()
 
 void ReadInNameBasics()
 {
-	foreach (string name in File.ReadLines("C:/temp/name.basics.tsv").Skip(1).Take(10))
+	foreach (string name in File.ReadLines("C:/temp/name.basics.tsv").Skip(1).Take(numberOfRows))
 	{
 		string[] parts = name.Split("\t");
 		string[] professionParts = new string[2];
 		string[] nameTitleParts = new string[2];
 		if (parts.Length == 6)
 		{
-			Console.WriteLine(name);
+			//Console.WriteLine(name);
 			names.Add(new NameModel(parts));
 			string professionString = parts[4];
 			string titlesString = parts[5];
@@ -137,13 +138,13 @@ void ReadInNameBasics()
 			}
 			catch (Exception ex)
 			{
-				if (!parts[4].Equals("\"N"))
+				if (!parts[4].Equals("\\N"))
 				{
 					professionParts[0] = parts[0];
 					professionParts[1] = parts[4];
 					professions.Add(new ProfessionModel(professionParts));
 				}
-				if (!parts[5].Equals("\"N"))
+				if (!parts[5].Equals("\\N"))
 				{
 					nameTitleParts[0] = parts[0];
 					nameTitleParts[1] = parts[5];
@@ -159,9 +160,15 @@ void ReadInNameBasics()
 	}
 }
 
+Stopwatch sw = new Stopwatch();
+
+sw.Start();
 ReadInTitleBasics();
-ReadInNameBasics();
-ReadInTitleCrews();
+//ReadInNameBasics();
+//ReadInTitleCrews();
+sw.Start();
+Console.WriteLine("Time Elapsed to Read in Data: " + sw.ElapsedMilliseconds + " ms");
+
 
 //foreach (TitleModel movie in movies)
 //{
@@ -200,8 +207,9 @@ ReadInTitleCrews();
 
 IInserter inserter = new PreparedInserter();
 SqlConnection sqlConn = new SqlConnection(Secret.connectionString);
+sw.Start();
 sqlConn.Open();
-//inserter.InsertTitles(movies, sqlConn);
+inserter.InsertTitles(movies, sqlConn);
 //inserter.InsertGenres(genres, sqlConn);
 //inserter.InsertNames(names, sqlConn);
 //inserter.InsertProfessions(professions, sqlConn);
@@ -209,3 +217,6 @@ sqlConn.Open();
 //inserter.InsertCrewDirectors(directors, sqlConn);
 //inserter.InsertCrewWriters(writers, sqlConn);
 sqlConn.Close();
+sw.Stop();
+
+Console.WriteLine("Elapsed milliseconds to Insert Data: " + sw.ElapsedMilliseconds + " ms");

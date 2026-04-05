@@ -117,7 +117,7 @@ namespace IMDbImportData.Inserters
 		{
 			DataTable directorTable = new DataTable();
 			directorTable.Columns.Add("TConst", typeof(int));
-			directorTable.Columns.Add("Genre", typeof(string));
+			directorTable.Columns.Add("NConst", typeof(string));
 
 			foreach (CrewDirectorModel director in directors)
 			{
@@ -134,7 +134,7 @@ namespace IMDbImportData.Inserters
 		{
 			DataTable writersTable = new DataTable();
 			writersTable.Columns.Add("TConst", typeof(int));
-			writersTable.Columns.Add("Genre", typeof(string));
+			writersTable.Columns.Add("NConst", typeof(string));
 
 			foreach (CrewWriterModel writer in writers)
 			{
