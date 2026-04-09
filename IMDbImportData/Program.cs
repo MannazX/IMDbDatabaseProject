@@ -17,7 +17,7 @@ List<ProfessionModel> professions = new List<ProfessionModel>();
 List<NameTitleModel> nameTitles = new List<NameTitleModel>();
 List<CrewDirectorModel> directors = new List<CrewDirectorModel>();
 List<CrewWriterModel> writers = new List<CrewWriterModel>();
-int numberOfRows = 100000;
+int numberOfRows = 10000;
 void ReadInTitleBasics()
 {
 	foreach (string movie in File.ReadLines("C:/temp/title.basics.tsv").Skip(1).Take(numberOfRows))
@@ -248,8 +248,8 @@ sqlConn.Open();
 //inserter.InsertNames(names, sqlConn);
 //inserter.InsertProfessions(professions, sqlConn);
 //inserter.InsertNameTitles(nameTitles, sqlConn);
-inserter.InsertCrewDirectors(directors, sqlConn);
-//inserter.InsertCrewWriters(writers, sqlConn);
+//inserter.InsertCrewDirectors(directors, sqlConn);
+inserter.InsertCrewWriters(writers, sqlConn);
 sqlConn.Close();
 sw.Stop();
 
