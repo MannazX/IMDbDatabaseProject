@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -66,7 +67,7 @@ namespace IMDbImportData
 			}
 		}
 
-		public void AddMovieTitle(string title, int year)
+		public void AddMovieTitle(string type, string primTitle, string origTitle, bool isAdult, int? startYear, int? endYear, int? runTime)
 		{
 			try
 			{
@@ -78,16 +79,20 @@ namespace IMDbImportData
 					{
 						cmd.CommandType = CommandType.StoredProcedure;
 						SqlCommand countTitles = new SqlCommand("SELECT COUNT(*) FROM Titles", conn);
-						int tConst = Convert.ToInt32(countTitles) + 1;
+						int tConst = Convert.ToInt32(countTitles.ExecuteScalar()) + 1;
 						cmd.Parameters.AddWithValue("@TConst", tConst);
-						cmd.Parameters.AddWithValue("@Title", title);
-						cmd.Parameters.AddWithValue("@Year", year);
+						cmd.Parameters.AddWithValue("@Type", type);
+						cmd.Parameters.AddWithValue("@PrimaryTitle", primTitle);
+						cmd.Parameters.AddWithValue("@OriginalTitle", origTitle);
+						cmd.Parameters.AddWithValue("@IsAdult", Convert.ToInt32(isAdult));
+						cmd.Parameters.AddWithValue("@StartYear", startYear);
+						cmd.Parameters.AddWithValue("@EndYear", endYear);
+						cmd.Parameters.AddWithValue("@RunTime", runTime);
 						using (SqlDataReader reader = cmd.ExecuteReader())
 						{
 							if (reader.Read())
 							{
-								int newTConst = Convert.ToInt32(reader["TConst"]);
-								Console.WriteLine($"Movie Title Added with ID: {newTConst}");
+								Console.WriteLine($"Movie Title Added with ID: {tConst}");
 							}
 						}
 					}
@@ -99,7 +104,7 @@ namespace IMDbImportData
 			}
 		}
 
-		public void UpdateMovieTitle(int tConst, string title, int year)
+		public void UpdateMovieTitle(int tConst, string type, string primTitle, string origTitle, bool isAdult, int? startYear, int? endYear, int? runTime)
 		{
 			try
 			{
@@ -112,12 +117,16 @@ namespace IMDbImportData
 						cmd.CommandType = CommandType.StoredProcedure;
 
 						cmd.Parameters.AddWithValue("@TConst", tConst);
-						cmd.Parameters.AddWithValue("@Title", title);
-						cmd.Parameters.AddWithValue("@Year", year);
-
+						cmd.Parameters.AddWithValue("@Type", type);
+						cmd.Parameters.AddWithValue("@PrimaryTitle", primTitle);
+						cmd.Parameters.AddWithValue("@OriginalTitle", origTitle);
+						cmd.Parameters.AddWithValue("@IsAdult", Convert.ToInt32(isAdult));
+						cmd.Parameters.AddWithValue("@StartYear", startYear);
+						cmd.Parameters.AddWithValue("@EndYear", endYear);
+						cmd.Parameters.AddWithValue("@RunTime", runTime);
 						cmd.ExecuteNonQuery();
 
-						Console.WriteLine($"Movie {tConst} Updated");
+						Console.WriteLine($"Movie with ID: {tConst} - Updated");
 					}
 				}
 			}
@@ -127,7 +136,7 @@ namespace IMDbImportData
 			}
 		}
 
-		public void AddName(string name, int year)
+		public void AddName(string name, int? birthYear, int? deathYear)
 		{
 			try
 			{
@@ -138,8 +147,12 @@ namespace IMDbImportData
 					using (SqlCommand cmd = new SqlCommand("SProc_AddName", conn))
 					{
 						cmd.CommandType = CommandType.StoredProcedure;
+						SqlCommand countNames = new SqlCommand("SELECT COUNT(*) FROM Names", conn);
+						int nConst = Convert.ToInt32(countNames.ExecuteScalar()) + 1;
+						cmd.Parameters.AddWithValue("@NConst", nConst);
 						cmd.Parameters.AddWithValue("@PrimaryName", name);
-						cmd.Parameters.AddWithValue("@BirthYear", year);
+						cmd.Parameters.AddWithValue("@BirthYear", birthYear);
+						cmd.Parameters.AddWithValue("@DeathYear", deathYear);
 						cmd.ExecuteNonQuery();
 					}
 				}
