@@ -11,15 +11,15 @@ namespace IMDbImportData.Inserters
 {
 	public class PreparedInserter : IInserter
 	{
-		public void InsertGenres(List<GenreModel> genres, SqlConnection sqlConn)
+		public void InsertGenres(List<TitleGenreModel> genres, SqlConnection sqlConn)
 		{
-			string query = "INSERT INTO Genres (" +
+			string query = "INSERT INTO TitleGenres (" +
 				"TConst, " +
 				"Genre) " +
 					"VALUES (@TConst, @Genre)";
 			SqlCommand sqlComm = new SqlCommand(query, sqlConn);
 			sqlComm.Prepare();
-			foreach (GenreModel genre in genres)
+			foreach (TitleGenreModel genre in genres)
 			{
 				sqlComm.Parameters.Clear();
 				sqlComm.Parameters.AddWithValue("@TConst", genre.TConst);

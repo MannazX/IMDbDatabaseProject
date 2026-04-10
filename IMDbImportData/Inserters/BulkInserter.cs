@@ -12,19 +12,19 @@ namespace IMDbImportData.Inserters
 {
 	public class BulkInserter : IInserter
 	{
-		public void InsertGenres(List<GenreModel> genres, SqlConnection sqlConn)
+		public void InsertGenres(List<TitleGenreModel> genres, SqlConnection sqlConn)
 		{
 			DataTable genreTable = new DataTable();
 			genreTable.Columns.Add("TConst", typeof(int));
 			genreTable.Columns.Add("Genre", typeof(string));
 
-			foreach (GenreModel genre in genres)
+			foreach (TitleGenreModel genre in genres)
 			{
 				genreTable.Rows.Add(genre.TConst, genre.Genre);
 			}
 			SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlConn)
 			{
-				DestinationTableName = "Genres"
+				DestinationTableName = "TitleGenres"
 			};
 			bulkCopy.WriteToServer(genreTable);
 		}

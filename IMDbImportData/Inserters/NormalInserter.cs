@@ -10,11 +10,11 @@ namespace IMDbImportData.Inserters
 {
 	public class NormalInserter : IInserter
 	{
-		public void InsertGenres(List<GenreModel> genres, SqlConnection sqlConn)
+		public void InsertGenres(List<TitleGenreModel> genres, SqlConnection sqlConn)
 		{
-			foreach (GenreModel genre in genres)
+			foreach (TitleGenreModel genre in genres)
 			{
-				string query = "INSERT INTO Genres (" +
+				string query = "INSERT INTO TitleGenres (" +
 					"TConst, " +
 					"Genre) " +
 								"VALUES (" + genre.TConst + ", " +

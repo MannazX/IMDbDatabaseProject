@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace IMDbImportData.Models
 {
-	public class GenreModel
+	public class TitleGenreModel
 	{
 		public int TConst { get; set; }
 		public string Genre { get; set; }
 
-		public GenreModel(string[] genreInfo)
+		public TitleGenreModel(string[] genreInfo)
 		{
 			TConst = Convert.ToInt32(genreInfo[0].Substring(2));
 			Genre = genreInfo[1];
